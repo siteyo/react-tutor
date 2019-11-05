@@ -5,6 +5,7 @@ import GameComponent from 'components/Game/GameComponent';
 const useGame = (): [string[], (i: number) => () => void, string] => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
+  const [gameStatus, setGameStatus] = useState('');
 
   const calculateWinner = (squares: string[]): string | null => {
     const lines = [
@@ -39,15 +40,14 @@ const useGame = (): [string[], (i: number) => () => void, string] => {
     setXIsNext(prev => !prev);
   };
 
-  let gameStatus: string = '';
   useEffect(() => {
     const winner = calculateWinner(squares);
     if (winner) {
-      gameStatus = 'Winner: ' + winner;
+      setGameStatus('Winner: ' + winner);
     } else {
-      gameStatus = 'Next player: ' + (xIsNext ? 'X' : 'O');
+      setGameStatus('Next player: ' + (xIsNext ? 'X' : 'O'));
     }
-  });
+  }, [squares, xIsNext]);
 
   return [squares, handleClick, gameStatus];
 };
