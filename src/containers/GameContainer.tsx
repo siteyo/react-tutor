@@ -8,7 +8,7 @@ const useGame = (): [string[], (i: number) => () => void, string] => {
   const [gameStatus, setGameStatus] = useState('');
 
   const calculateWinner = (squares: string[]): string | null => {
-    const lines = [
+    const lines: number[][] = [
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],
