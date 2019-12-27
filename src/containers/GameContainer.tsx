@@ -6,8 +6,9 @@ const useGame = (): [string[], (i: number) => () => void, string] => {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
   const [gameStatus, setGameStatus] = useState('');
+  const [winner, setWinner] = useState('');
 
-  const calculateWinner = (squares: string[]): string | null => {
+  const calculateWinner = (squares: string[]): string => {
     const lines: number[][] = [
       [0, 1, 2],
       [3, 4, 5],
@@ -28,26 +29,34 @@ const useGame = (): [string[], (i: number) => () => void, string] => {
         return squares[a];
       }
     }
-    return null;
+    return '';
   };
 
   const handleClick = (i: number) => () => {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = xIsNext ? 'X' : 'O';
-    setSquares(squares);
-    setXIsNext(prev => !prev);
+    const nextSquares = squares.slice();
+    nextSquares[i] = xIsNext ? 'X' : 'O';
+    setSquares(nextSquares);
   };
 
   useEffect(() => {
-    const winner = calculateWinner(squares);
-    if (winner) {
-      setGameStatus('Winner: ' + winner);
+    const win = calculateWinner(squares);
+    if (win) {
+      setWinner(win);
     } else {
-      setGameStatus('Next player: ' + (xIsNext ? 'X' : 'O'));
+      setXIsNext(prev => !prev);
     }
-  }, [squares, xIsNext]);
+  }, [squares]);
+
+  useEffect(() => {
+    setGameStatus('Winner: ' + winner);
+  }, [winner]);
+
+  useEffect(() => {
+    setGameStatus('Next player: ' + (xIsNext ? 'X' : 'O'));
+  }, [xIsNext]);
 
   return [squares, handleClick, gameStatus];
 };
